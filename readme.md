@@ -63,7 +63,7 @@ BrainyCoder is a cutting-edge coding challenge platform that leverages microserv
 
 ## Contact me
 
-If you have any questions, suggestions, or feedback, don't hesitate to reach out to us. You can me at `danielomoding173@gmail.com`.
+If you have any questions, suggestions, or feedback, don't hesitate to reach out to me. You can email me at `danielomoding173@gmail.com`.
 
 Thank you for visiting my github repository🥳, do not forget to follow me🙏🙏🙏. More fun projects dropping soon!!!.  Happy coding!👨‍💻
 
