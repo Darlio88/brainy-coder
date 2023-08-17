@@ -14,7 +14,11 @@ const AuthForm = (props: IAuth) => {
     const [password, setPassword] = useState('');
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        if (!name || !email || !password) {
+        if (props.path === 'sign-up' && (!name || !email || !password)) {
+            toast.error('All fields are required');
+            return;
+        }
+        if (props.path === 'sign-in' && (!email || !password)) {
             toast.error('All fields are required');
             return;
         }
@@ -76,8 +80,8 @@ const AuthForm = (props: IAuth) => {
                             className=" bg-emerald-100 rounded px-2 py-2 shadow-sm border border-emerald-700 outline-none"
                         />
                     </div>
-                    <button className="hover:bg-rose-700 hover:text-rose-100 bg-rose-100 text-rose-700 border border-rose-700 text-base transition ">
-                        Login
+                    <button className="capitalize hover:bg-rose-700 hover:text-rose-100 bg-rose-100 text-rose-700 border border-rose-700 text-base transition ">
+                        {props.path === 'sign-in' ? 'login' : 'sign up'}
                     </button>
                 </form>
                 <div className="flex gap-2 text-base md:text-lg mt-2">

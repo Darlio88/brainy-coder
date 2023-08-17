@@ -1,6 +1,5 @@
-import { Types } from "mongoose";
+import { Types } from 'mongoose';
 
-
-export interface IPayload{
-    challengeId:Types.ObjectId,
+export interface IPayload {
+    challengeId: Types.ObjectId;
 }

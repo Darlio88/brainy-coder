@@ -39,9 +39,9 @@ const Create = () => {
     const [functionDescription, setFunctionDescription] = React.useState('');
     const [output, setOutput] = React.useState('');
     const [title, setTitle] = React.useState('');
-
+    const [solution, setSolution] = React.useState('');
     //control description change
-    const onDescription = (event :React.ChangeEvent<HTMLTextAreaElement>) => {
+    const onDescription = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setDescription(event.target.value);
     };
 
@@ -50,13 +50,18 @@ const Create = () => {
         setFunctionDescription(value);
     }, []);
 
+    //control sample input change
+    const onSolution = React.useCallback((value: string) => {
+        setSolution(value);
+    }, []);
+
     //control sample output change
     const onOutput = React.useCallback((value: string) => {
         setOutput(value);
     }, []);
 
     //control title change
-    const onTitle = (event :React.ChangeEvent<HTMLInputElement>) => {
+    const onTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTitle(event.target.value);
     };
 
@@ -79,6 +84,7 @@ const Create = () => {
                 description,
                 functionDefinition: functionDescription,
                 output,
+                solution,
             },
             {
                 headers,
@@ -101,34 +107,36 @@ const Create = () => {
         <>
             <Header />
             <section className="mt-8 mb-6 text-emerald-950 text-base">
-
                 <div className="grid lg:grid-cols-2 gap-6 h-[72vh] overflow-hidden mt-5 mb-8 pt-6 pb-8">
-
                     {/* creation of Code challenge */}
                     <div className="overflow-y-auto grid gap-3 overflow-x-hidden px-4 pb-8">
-                    <h1 className="text-lg font-mono capitalize text-emerald-950 font-bold">
-                    Create Coding Challenge{' '}
-                    <small className="block text-xs font-extralight">
-                        (Use the initial sample on the left as your guide)
-                    </small>
-                    </h1>
+                        <h1 className="text-lg font-mono capitalize text-emerald-950 font-bold">
+                            Create Coding Challenge{' '}
+                            <small className="block text-xs font-extralight">
+                                (Use the initial sample on the left as your
+                                guide)
+                            </small>
+                        </h1>
                         {/* Title area */}
-                        <div className='p-1'>
-                            <h4 className='font-semibold text-base'> Title:</h4>
+                        <div className="p-1">
+                            <h4 className="font-semibold text-base"> Title:</h4>
                             <div className="rounded-md overflow-hidden m-2 grid">
-                                <input 
+                                <input
                                     value={title}
                                     onChange={onTitle}
-                                    className='px-3 py-2 m-1 outline-none rounded bg-emerald-100 focus:border focus:border-emerald-950'
+                                    className="px-3 py-2 m-1 outline-none rounded bg-emerald-100 focus:border focus:border-emerald-950"
                                 />
                             </div>
                         </div>
                         {/* description area */}
                         <div className="grid gap-2">
-                            <h4 className='font-semibold text-base'> Description:</h4>
+                            <h4 className="font-semibold text-base">
+                                {' '}
+                                Description:
+                            </h4>
                             <div className="rounded-md overflow-hidden m-2 grid ">
                                 <textarea
-                                 className='px-3 py-2 m-1 outline-none rounded bg-emerald-100 focus:border focus:border-emerald-950'
+                                    className="px-3 py-2 m-1 outline-none rounded bg-emerald-100 focus:border focus:border-emerald-950"
                                     value={description}
                                     onChange={onDescription}
                                     rows={10}
@@ -136,24 +144,46 @@ const Create = () => {
                             </div>
                         </div>
                         {/* function definition area */}
-                        <div className='max-w-[100%]'>
-                            <h4 className='font-semibold text-base'> Function Definition:</h4>
+                        <div className="max-w-[100%]">
+                            <h4 className="font-semibold text-base">
+                                {' '}
+                                Function Definition:
+                            </h4>
                             <div className="rounded-md overflow-hidden m-2">
                                 <CodeEditor
                                     value={functionDescription}
                                     onChange={onFunctionDescription}
                                     minHeight="180px"
-                                    
                                     extension={[
                                         javascript({ typescript: true }),
                                     ]}
                                 />
                             </div>
                         </div>
-                        {/* sample input area */}
+                        {/* solution area */}
+                        <div className="max-w-[100%]">
+                            <h4 className="font-semibold text-base">
+                                {' '}
+                                Solution:
+                            </h4>
+                            <div className="rounded-md overflow-hidden m-2">
+                                <CodeEditor
+                                    value={solution}
+                                    onChange={onSolution}
+                                    minHeight="180px"
+                                    extension={[
+                                        javascript({ typescript: true }),
+                                    ]}
+                                />
+                            </div>
+                        </div>
+                        {/* sample expected out area */}
                         <div>
-                        <h4 className='font-semibold text-base'> Output:</h4>
-                           
+                            <h4 className="font-semibold text-base">
+                                {' '}
+                                Output:
+                            </h4>
+
                             <div className="rounded-md overflow-hidden m-2">
                                 <CodeEditor
                                     value={output}

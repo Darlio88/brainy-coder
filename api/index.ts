@@ -10,7 +10,9 @@ import challengesDBConnection from './config/challengeDbConfig';
 //routes
 import userRoutes from './routes/auth';
 import challengeRoutes from './routes/challenges';
-import solutionRoutes from './routes/solve'
+import solutionRoutes from './routes/solve';
+import solvedSolution from './routes/solutions';
+
 //connecting to databases
 userDatabaseConnection();
 challengesDBConnection().catch((err) => console.log(err));
@@ -23,7 +25,9 @@ app.use(express.json({ limit: '50mb' }));
 
 app.use('/api', userRoutes);
 app.use('/api', challengeRoutes);
-app.use('/api',solutionRoutes)
+app.use('/api', solutionRoutes);
+app.use('/api', solvedSolution);
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

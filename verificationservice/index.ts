@@ -1,4 +1,4 @@
-import solutionDbConnection from './config/solutionDB';
+import solutionDbConnection from './config/challengesDB';
 import messageQueueConnection from './utils/consumer';
 
 //connect to the database

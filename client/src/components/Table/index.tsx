@@ -20,9 +20,9 @@ const columns: GridColDef[] = [
         width: 150,
     },
     {
-        field: 'accepts',
-        headerName: 'Attempts',
-        type: 'number',
+        field: 'verified',
+        headerName: 'Verified',
+        type: 'boolean',
         width: 110,
     },
     // {

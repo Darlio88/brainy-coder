@@ -3,11 +3,7 @@ import { Pool, PoolClient } from 'pg';
 function userBDConnect(): Pool {
     //creating a client/instance
     const pool = new Pool({
-        user: 'bcsjmedacecxxukk',
-        database: 'mqvbabrtpxgqvbzdtuhdjvrf',
-        password: 'mKFd_7<1F#qv<8<wwARlobyfqP46Z^Sj',
-        host: '102.134.147.233',
-        port: 32761,
+        connectionString: 'postgresql://myuser:mypassword@localhost:5432',
     });
     //check if users table exists
     pool.query(
@@ -20,6 +16,8 @@ SELECT EXISTS (
 `,
         ['users'],
         (err, results) => {
+            if (err) throw err;
+            console.log(results);
             console.log(results.rows[0].exists + 'hererrere');
             if (!results.rows[0].exists) {
                 pool.query(
@@ -32,7 +30,7 @@ SELECT EXISTS (
         )`,
                     (err, data) => {
                         console.log(err, data);
-                        pool.end();
+                        // pool.end();
                     }
                 );
             }

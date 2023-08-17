@@ -1,7 +1,7 @@
 import Docker from 'dockerode';
 
 //solutions db
-import { Solution } from '../config/solutionDB';
+import { Challenge } from '../config/challengesDB';
 
 //utils
 import saveStdout from './saveStdout';
@@ -10,7 +10,7 @@ export default async function executeCode(
     container: Docker.Container,
     challengeId
 ) {
-    const solutionSubmitted = await Solution.findById(challengeId);
+    const solutionSubmitted = await Challenge.findById(challengeId);
     const execOptions = {
         Cmd: ['node', '-e', solutionSubmitted.solution],
         AttachStdin: true,

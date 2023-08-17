@@ -4,7 +4,7 @@ export default function generateJWT(name: string, email: string) {
     const payload = { name, email };
 
     const token = jwt.sign(payload, 'fuck-hunger', {
-        expiresIn: '1h',
+        expiresIn: '10h',
     });
 
     return token;

@@ -5,9 +5,14 @@ import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom';
 import { historyField } from '@codemirror/commands';
+import Confetti from 'react-dom-confetti';
+
+//loaders
+import { TailSpin, Audio, ColorRing } from 'react-loader-spinner';
 
 const stateFields = { history: historyField };
 //icons
+import { MdVerified, MdSmsFailed } from 'react-icons/md';
 import { AiOutlineClose } from 'react-icons/ai';
 
 //components
@@ -21,26 +26,32 @@ import getAccessToken from '../../utils/getAccessToken';
 import getChallenge from '../../hooks/useChallenge';
 import { useParams } from 'react-router-dom';
 
-
 //interface for the challenge
 import { IChallenge } from '../../interfaces/challengeInterface';
 import { ToastContainer, toast } from 'react-toastify';
 
 const SolvePage = () => {
     const [solution, setSolution] = React.useState(' ');
+    const [isModal, setIsModal] = React.useState(false);
+    const [state, setState] = React.useState('Uploading...');
+    const [passed, setPassed] = React.useState(false);
+    const [isDone, setIsDone] = React.useState(true);
+    const [isCorrect, setIsCorrect] = React.useState(false);
     //control the code editor
-    const onChange = React.useCallback((value: string, viewUpdate) => {
-        console.log('value', value);
-        localStorage.setItem('codeState', value);
-        setSolution(value);
-        const state = viewUpdate.state.toJSON(stateFields);
-        localStorage.setItem('progress', JSON.stringify(state));
-    }, []);
+    const onChange = React.useCallback(
+        (value: string, viewUpdate: viewUpdate) => {
+            console.log('value', value);
+            localStorage.setItem('codeState', value);
+            setSolution(value);
+            const state = viewUpdate.state.toJSON(stateFields);
+            localStorage.setItem('progress', JSON.stringify(state));
+        },
+        []
+    );
 
     //route params
     const params = useParams();
 
-    const [isModal, setIsModal] = React.useState(false);
     const modalClass = clsx(
         'absolute',
         !isModal && 'hidden',
@@ -54,27 +65,81 @@ const SolvePage = () => {
         'w-[100%]'
     );
     //
+    const config = {
+        angle: 90,
+        spread: 360,
+        startVelocity: 40,
+        elementCount: 70,
+        dragFriction: 0.12,
+        duration: 3000,
+        stagger: 3,
+        width: '10px',
+        height: '10px',
+        perspective: '500px',
+        colors: ['#a864fd', '#29cdff', '#78ff44', '#ff718d', '#fdff6a'],
+    };
+
     const challenge: IChallenge = getChallenge(params.id);
     async function submitCode(
         e: React.MouseEvent<HTMLButtonElement, MouseEvent>
     ) {
         e.preventDefault();
+        setIsDone(false);
         console.log(solution);
         const token = getAccessToken();
         const headers = {
             Authorization: token ? `Bearer ${token}` : null,
             // Other headers if needed
         };
-        await BaseUrl.post(`/solve/${params.id}`, { code: solution }, {headers}).then(
-            (res) => {
-                const { uniqueUrl } = res.data;
-                console.log(uniqueUrl);
-                toast.info("Processing...")
-            }
-        ).catch(err=>{
-            console.log(err)
-            toast.error("Server Error")
-        });
+        await BaseUrl.post(
+            `/solve/${params.id}`,
+            { code: solution },
+            { headers }
+        )
+            .then((res) => {
+                const { url } = res.data;
+                console.log(url);
+                setIsModal(true);
+                setState((prev) => 'Processing...');
+                setTimeout(() => {
+                    (async () =>
+                        await BaseUrl.get(`/solution/${url}`)
+                            .then((res) => {
+                                console.log(res.data);
+                                const { correct } = res.data;
+                                if (correct === undefined) {
+                                    toast.error('No solution found');
+                                }
+                                setIsDone((prev) => !prev);
+                                if (correct) {
+                                    setIsCorrect(true);
+                                    setPassed(true);
+                                    setState('Passed🥳🥳🥳');
+                                    localStorage.removeItem('codeState');
+                                } else {
+                                    setIsCorrect(false);
+                                    setState('Failed😕😕😕');
+                                }
+
+                                setTimeout(() => {
+                                    setPassed(false);
+                                    setIsModal(false);
+                                    setIsDone(true);
+                                    setState('Uploading');
+                                }, 5000);
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                                toast.error(
+                                    'Failed to load solution, Server Error'
+                                );
+                            }))();
+                }, 10000);
+            })
+            .catch((err) => {
+                console.log(err);
+                toast.error('Server Error');
+            });
     }
     if (!challenge) {
         return (
@@ -159,11 +224,33 @@ const SolvePage = () => {
             <div className={modalClass}>
                 {/* modal */}
                 <div className="h-[240px] w-[240px] flex relative justify-center opacity-90 items-center text-base rounded-md shadow-lg bg-emerald-500 text-emerald-950">
-                    <div className="flex flex-col items-center gap-1">
-                        <span className="rounded-full h-8 w-8 block bg-sky-800"></span>
-                        <small>Processing...</small>
+                    <div className="flex flex-col items-center gap-1 ">
+                        {/* <span className="rounded-full h-8 w-8 block bg-sky-800"></span> */}
+
+                        {isDone ? (
+                            <>
+                                {isCorrect ? (
+                                    <MdVerified className="text-2xl  text-emerald-950 mb-1" />
+                                ) : (
+                                    <MdSmsFailed className="text-2xl  text-red-700 mb-1" />
+                                )}
+                            </>
+                        ) : (
+                            <TailSpin
+                                height="48"
+                                width="48"
+                                radius="3"
+                                color="white"
+                                ariaLabel="loading"
+                            />
+                        )}
+
+                        <small className="text-slate-50 font-medium">
+                            {state}
+                        </small>
                     </div>
                     {/* close button */}
+                    <Confetti active={passed} config={config} />
                     <button
                         onClick={() => setIsModal(false)}
                         className="absolute top-2 right-2 transition inline-flex items-center rounded-full p-1 focus:outline-none hover:bg-rose-500 border border-rose-950 bg-rose-500 text-rose-950 hover:border-rose-500 hover:text-rose-100 text-base my-4 md:mt-0 shadow-sm hover:shadow"
@@ -171,9 +258,8 @@ const SolvePage = () => {
                         <AiOutlineClose />
                     </button>
                 </div>
-
             </div>
-            <ToastContainer/>
+            <ToastContainer />
         </div>
     );
 };

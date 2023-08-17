@@ -14,9 +14,9 @@ interface ICodeEditor {
     functionDefinition: string;
 }
 
-export default function App(props: ICodeEditor) {
+export default function CodeEditor(props: ICodeEditor) {
     const editor = useRef();
-    const serializedState = localStorage.getItem('progress');
+    const serializedState = localStorage.getItem('value');
     const value = localStorage.getItem('codeState') || props.functionDefinition;
     const initialState = serializedState
         ? {

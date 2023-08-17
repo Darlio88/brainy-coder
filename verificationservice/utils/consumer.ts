@@ -3,13 +3,13 @@ import amqplib from 'amqplib';
 import { IPayload } from '../interfaces';
 
 //solutionsDB
-import { Solution } from '../config/solutionDB';
+import { Challenge } from '../config/challengesDB';
 
 //code runner
 import { runner } from './runner';
 
 async function queueConnection() {
-    const queue = 'run-code';
+    const queue = 'run-challenge';
     const conn = await amqplib.connect('amqp://localhost');
     const ch1 = await conn.createChannel();
     await ch1.assertQueue(queue);
